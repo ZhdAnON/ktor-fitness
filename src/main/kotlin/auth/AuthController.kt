@@ -6,6 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.mindrot.jbcrypt.BCrypt
 
 data class AuthRequest(val email: String, val password: String)
 data class AuthResponse(val token: String)
@@ -22,7 +23,7 @@ fun Route.authRoutes(jwt: JwtService, repo: UserRepository) {
         val req = call.receive<AuthRequest>()
         val user = repo.findByEmail(req.email)
 
-        if (user == null || user[UserTable.password] != req.password) {
+        if (user == null || !BCrypt.checkpw(req.password, user[UserTable.password])) {
             call.respondText("Invalid credentials")
             return@post
         }

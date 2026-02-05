@@ -29,4 +29,7 @@ dependencies {
 
     // Logging
     implementation("ch.qos.logback:logback-classic:1.4.14")
+
+    // BCrypt
+    implementation("org.mindrot:jbcrypt:0.4")
 }
