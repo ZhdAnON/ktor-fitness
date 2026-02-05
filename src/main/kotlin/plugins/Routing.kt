@@ -9,14 +9,14 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Application.configureRouting() {
-
     val jwt = JwtService(environment.config)
     val repo = UserRepository()
 
     routing {
-
         // Public
-        authRoutes(jwt, repo)
+        route("/auth") {
+            authRoutes(jwt, repo)
+        }
 
         // Protected
         authenticate {
