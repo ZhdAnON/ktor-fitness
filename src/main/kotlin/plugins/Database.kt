@@ -4,7 +4,7 @@ import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.Database
 
 fun Application.configureDatabase() {
-    val config = environment.config.config("ktor.database")
+    val config = environment.config.config("db")
 
     Database.connect(
         url = config.property("url").getString(),
