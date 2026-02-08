@@ -5,7 +5,7 @@ plugins {
 }
 
 application {
-    mainClass.set("com.example.ApplicationKt")
+    mainClass.set("com.zhdanon.ApplicationKt")
 }
 
 repositories {

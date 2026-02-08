@@ -9,17 +9,19 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Application.configureRouting() {
-    val jwt = JwtService(environment.config)
     val repo = UserRepository()
 
     routing {
-        // Public
+        get("/") {
+            call.respondText("Hello, World!")
+        }
+
         route("/auth") {
+            val jwt = JwtService(environment?.config ?: error("Application config not loaded"))
             authRoutes(jwt, repo)
         }
 
-        // Protected
-        authenticate {
+        authenticate("auth-jwt") {
             get("/profile") {
                 call.respondText("This is a protected endpoint")
             }

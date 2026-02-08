@@ -1,37 +1,21 @@
 package com.zhdanon.plugins
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
+import com.zhdanon.auth.JwtService
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 
 fun Application.configureSecurity() {
+    val jwt = JwtService(environment.config)
 
-    val config = environment.config.config("ktor.security.jwt")
-
-    val secret = config.property("secret").getString()
-    val issuer = config.property("issuer").getString()
-    val audience = config.property("audience").getString()
-    val realm = config.property("realm").getString()
-
-    authentication {
-        jwt {
-            this.realm = realm
-
-            verifier(
-                JWT
-                    .require(Algorithm.HMAC256(secret))
-                    .withIssuer(issuer)
-                    .withAudience(audience)
-                    .build()
-            )
-
+    install(Authentication) {
+        jwt("auth-jwt") {
+            verifier(jwt.verifier)
             validate { credential ->
-                if (credential.payload.getClaim("id").asInt() != null)
+                val audience = credential.payload.audience
+                if (audience.contains(jwt.audience)) {
                     JWTPrincipal(credential.payload)
-                else
-                    null
+                } else null
             }
         }
     }

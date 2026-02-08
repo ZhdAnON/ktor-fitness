@@ -14,6 +14,6 @@ class UserRepository {
     }
 
     fun findByEmail(email: String): ResultRow? = transaction {
-        UserTable.select { UserTable.email eq email }.singleOrNull()
+        UserTable.selectAll().where { UserTable.email eq email }.singleOrNull()
     }
 }

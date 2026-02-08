@@ -1,6 +1,5 @@
 package com.zhdanon
 
-import com.zhdanon.plugins.configureDatabase
 import com.zhdanon.plugins.configureRouting
 import com.zhdanon.plugins.configureSecurity
 import com.zhdanon.plugins.configureSerialization
@@ -12,7 +11,6 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     configureSerialization()
-    configureDatabase()
     configureSecurity()
     configureRouting()
 }
