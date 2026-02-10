@@ -1,16 +1,29 @@
 package com.zhdanon
 
-import com.zhdanon.plugins.configureRouting
-import com.zhdanon.plugins.configureSecurity
-import com.zhdanon.plugins.configureSerialization
+import com.zhdanon.database.DatabaseFactory
+import com.zhdanon.auth.configureAuth
+import com.zhdanon.auth.authRoutes
+import com.zhdanon.routes.healthRoutes
 import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.serialization.kotlinx.json.*
 
-fun main(args: Array<String>) {
-    io.ktor.server.netty.EngineMain.main(args)
+fun main() {
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+        module()
+    }.start(wait = true)
 }
 
 fun Application.module() {
-    configureSerialization()
-    configureSecurity()
-    configureRouting()
+    install(ContentNegotiation) {
+        json()
+    }
+
+    DatabaseFactory.init()
+    configureAuth()
+
+    healthRoutes()
+    authRoutes()
 }

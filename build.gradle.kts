@@ -1,8 +1,14 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
+    kotlin("jvm") version "2.0.0"
+    id("io.ktor.plugin") version "2.3.8"
+    kotlin("plugin.serialization") version "2.0.0"
     application
-    kotlin("jvm") version "1.9.22"
-    id("io.ktor.plugin") version "2.3.12"
 }
+
+group = "com.fitness"
+version = "0.0.1"
 
 application {
     mainClass.set("com.zhdanon.ApplicationKt")
@@ -14,22 +20,43 @@ repositories {
 
 dependencies {
     // Ktor
-    implementation("io.ktor:ktor-server-core-jvm")
-    implementation("io.ktor:ktor-server-netty-jvm")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm")
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
-    implementation("io.ktor:ktor-server-call-logging-jvm")
+    implementation("io.ktor:ktor-server-core-jvm:2.3.8")
+    implementation("io.ktor:ktor-server-netty-jvm:2.3.8")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.3.8")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:2.3.8")
+    implementation("io.ktor:ktor-server-auth-jvm:2.3.8")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:2.3.8")
 
-    // Exposed + PostgreSQL
+    // Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    // Exposed + PostgreSQL + Hikari
     implementation("org.jetbrains.exposed:exposed-core:0.50.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.50.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.50.1")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.50.1")
+    implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("org.postgresql:postgresql:42.7.3")
+
+    // Kotlinx datetime
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
 
     // Logging
     implementation("ch.qos.logback:logback-classic:1.4.14")
 
     // BCrypt
     implementation("org.mindrot:jbcrypt:0.4")
+    implementation(kotlin("stdlib-jdk8"))
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "17"
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }
