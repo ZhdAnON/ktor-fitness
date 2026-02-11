@@ -1,5 +1,6 @@
-package com.zhdanon.auth
+package com.zhdanon.routes
 
+import com.zhdanon.auth.UserResponse
 import com.zhdanon.repository.UserRepository
 import io.ktor.http.*
 import io.ktor.server.application.*

@@ -1,5 +1,6 @@
-package com.zhdanon.auth
+package com.zhdanon.routes
 
+import com.zhdanon.auth.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

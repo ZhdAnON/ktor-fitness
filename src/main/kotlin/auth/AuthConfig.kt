@@ -9,8 +9,8 @@ fun Application.configureAuth() {
         jwt("auth-jwt") {
             verifier(JwtConfig.accessVerifier())
             validate { credential ->
-                val email = credential.payload.getClaim("email").asString()
-                if (email != null) JWTPrincipal(credential.payload) else null
+                val userId = credential.payload.getClaim("userId").asString()
+                if (userId != null) JWTPrincipal(credential.payload) else null
             }
         }
     }
