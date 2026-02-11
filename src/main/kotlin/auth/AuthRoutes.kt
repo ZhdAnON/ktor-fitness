@@ -5,18 +5,11 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.json.Json
 
-fun Application.authRoutes() {
-    val authService = AuthService()
-
-    routing {
+fun Application.authRoutes(authService: AuthService) {
+        routing {
         post("/auth/register") {
-            val raw = call.receiveText()
-            println("RAW BODY = '$raw'")
-            val req = Json.decodeFromString<AuthRequest>(raw)
-
-//            val req = call.receive<AuthRequest>()
+            val req = call.receive<AuthRequest>()
             val result = authService.register(req.email, req.password)
 
             result.fold(
@@ -67,6 +60,16 @@ fun Application.authRoutes() {
                     )
                 }
             )
+        }
+
+        post("/auth/refresh") {
+            try {
+                val body = call.receive<RefreshRequest>()
+                val response = authService.refresh(body.refreshToken)
+                call.respond(HttpStatusCode.OK, response)
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.Unauthorized, "Invalid refresh token")
+            }
         }
     }
 }

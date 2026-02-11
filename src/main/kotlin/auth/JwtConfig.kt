@@ -1,6 +1,7 @@
 package com.zhdanon.auth
 
 import com.auth0.jwt.JWT
+import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.zhdanon.domain.User
 import java.util.*
@@ -30,7 +31,14 @@ object JwtConfig {
             .withExpiresAt(Date(System.currentTimeMillis() + refreshValidityMs))
             .sign(algorithm)
 
-    fun verifier() =
+    fun verifyRefreshToken(token: String) =
+        JWT.require(algorithm)
+            .withIssuer(issuer)
+            .withClaim("type", "refresh")
+            .build()
+            .verify(token)
+
+    fun accessVerifier(): JWTVerifier =
         JWT.require(algorithm)
             .withIssuer(issuer)
             .build()

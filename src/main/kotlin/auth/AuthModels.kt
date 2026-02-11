@@ -21,4 +21,9 @@ data class AuthRequest(
     val password: String
 )
 
+@Serializable
+data class RefreshRequest(
+    val refreshToken: String
+)
+
 data class Tokens(val access: String, val refresh: String)

@@ -7,7 +7,7 @@ import io.ktor.server.auth.jwt.*
 fun Application.configureAuth() {
     install(Authentication) {
         jwt("auth-jwt") {
-            verifier(JwtConfig.verifier())
+            verifier(JwtConfig.accessVerifier())
             validate { credential ->
                 val email = credential.payload.getClaim("email").asString()
                 if (email != null) JWTPrincipal(credential.payload) else null
