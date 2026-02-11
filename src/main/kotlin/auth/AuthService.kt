@@ -6,7 +6,7 @@ import org.mindrot.jbcrypt.BCrypt
 import java.util.*
 
 class AuthService(
-    private val userRepository: UserRepository = UserRepository(),
+    val userRepository: UserRepository = UserRepository(),
     private val jwtConfig: JwtConfig
 ) {
     fun register(email: String, password: String): Result<Pair<User, Tokens>> {

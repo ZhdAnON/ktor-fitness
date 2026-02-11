@@ -1,10 +1,7 @@
 package com.zhdanon
 
-import com.zhdanon.auth.AuthService
-import com.zhdanon.auth.JwtConfig
+import com.zhdanon.auth.*
 import com.zhdanon.database.DatabaseFactory
-import com.zhdanon.auth.configureAuth
-import com.zhdanon.auth.authRoutes
 import com.zhdanon.routes.healthRoutes
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -21,13 +18,12 @@ fun main() {
 }
 
 fun Application.module(service: AuthService) {
-    install(ContentNegotiation) {
-        json()
-    }
+    install(ContentNegotiation) { json() }
 
     DatabaseFactory.init()
     configureAuth()
 
     healthRoutes()
     authRoutes(service)
+    userRoutes(service.userRepository)
 }

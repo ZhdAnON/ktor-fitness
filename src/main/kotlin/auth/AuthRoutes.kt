@@ -7,7 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Application.authRoutes(authService: AuthService) {
-        routing {
+    routing {
         post("/auth/register") {
             val req = call.receive<AuthRequest>()
             val result = authService.register(req.email, req.password)
