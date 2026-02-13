@@ -15,6 +15,27 @@ import java.util.*
 
 fun Application.workoutRoutes(repo: WorkoutsRepository) {
     routing {
+        get("/workout") {
+            val workouts = repo.getWorkouts()
+            call.respond(workouts.map { it.toResponse() })
+        }
+
+        get("/workout/{id}") {
+            val workoutIdParam = call.parameters["id"]
+                ?: return@get call.respond(HttpStatusCode.BadRequest, "Workout ID is required")
+
+            val workoutId = try {
+                UUID.fromString(workoutIdParam)
+            } catch (e: IllegalArgumentException) {
+                return@get call.respond(HttpStatusCode.BadRequest, "Invalid workout ID format")
+            }
+
+            val workout = repo.getWorkoutById(workoutId)
+                ?: return@get call.respond(HttpStatusCode.NotFound, "Workout not found")
+
+            call.respond(workout.toResponse())
+        }
+
         authenticate("auth-jwt") {
             post("/workout") {
                 val userId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
@@ -25,28 +46,6 @@ fun Application.workoutRoutes(repo: WorkoutsRepository) {
                 repo.createWorkout(UUID.fromString(userId), workout)
                 call.respond(HttpStatusCode.OK)
             }
-
-            get("/workout") {
-                val workouts = repo.getWorkouts()
-                call.respond(workouts.map { it.toResponse() })
-            }
-
-            get("/workout/{id}") {
-                val workoutIdParam = call.parameters["id"]
-                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Workout ID is required")
-
-                val workoutId = try {
-                    UUID.fromString(workoutIdParam)
-                } catch (e: IllegalArgumentException) {
-                    return@get call.respond(HttpStatusCode.BadRequest, "Invalid workout ID format")
-                }
-
-                val workout = repo.getWorkoutById(workoutId)
-                    ?: return@get call.respond(HttpStatusCode.NotFound, "Workout not found")
-
-                call.respond(workout.toResponse())
-            }
-
 
             delete("/workout/{id}") {
                 val principal = call.principal<JWTPrincipal>()!!
