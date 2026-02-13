@@ -27,8 +27,10 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jvm:2.3.8")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:2.3.8")
 
-    // Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    // Serialization + Kotlinx datetime
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+    implementation("org.jetbrains.exposed:exposed-core:...")
 
     // Exposed + PostgreSQL + Hikari
     implementation("org.jetbrains.exposed:exposed-core:0.50.1")
@@ -37,12 +39,12 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.50.1")
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("org.postgresql:postgresql:42.7.3")
-
-    // Kotlinx datetime
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+    implementation("org.jetbrains.exposed:exposed-json:0.50.1")
 
     // Logging
     implementation("ch.qos.logback:logback-classic:1.4.14")
+    implementation("io.ktor:ktor-server-call-logging-jvm:2.3.8")
+    implementation("io.ktor:ktor-server-status-pages-jvm:2.3.8")
 
     // BCrypt
     implementation("org.mindrot:jbcrypt:0.4")
@@ -52,11 +54,11 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
 }
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
+//val compileKotlin: KotlinCompile by tasks
+//compileKotlin.kotlinOptions {
+//    jvmTarget = "1.8"
+//}
+//val compileTestKotlin: KotlinCompile by tasks
+//compileTestKotlin.kotlinOptions {
+//    jvmTarget = "1.8"
+//}

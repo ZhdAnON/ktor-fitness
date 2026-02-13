@@ -1,7 +1,7 @@
 package com.zhdanon.repository
 
-import com.zhdanon.database.tables.Users
-import com.zhdanon.domain.User
+import com.zhdanon.models.tables.Users
+import com.zhdanon.models.domain.User
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.*

@@ -1,4 +1,4 @@
-package com.zhdanon.domain
+package com.zhdanon.models.domain
 
 import kotlinx.datetime.LocalDateTime
 import java.util.UUID

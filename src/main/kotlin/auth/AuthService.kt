@@ -1,6 +1,6 @@
 package com.zhdanon.auth
 
-import com.zhdanon.domain.User
+import com.zhdanon.models.domain.User
 import com.zhdanon.repository.UserRepository
 import org.mindrot.jbcrypt.BCrypt
 import java.util.*

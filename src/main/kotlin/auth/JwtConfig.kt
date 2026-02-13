@@ -3,7 +3,7 @@ package com.zhdanon.auth
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
-import com.zhdanon.domain.User
+import com.zhdanon.models.domain.User
 import java.util.*
 
 object JwtConfig {
