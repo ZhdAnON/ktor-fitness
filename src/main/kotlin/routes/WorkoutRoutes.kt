@@ -1,6 +1,7 @@
 package com.zhdanon.routes
 
-import com.zhdanon.models.dto.WorkoutRequest
+import com.zhdanon.models.mappers.toDetailsResponse
+import com.zhdanon.models.request.WorkoutRequest
 import com.zhdanon.models.mappers.toDomain
 import com.zhdanon.models.mappers.toResponse
 import com.zhdanon.repository.WorkoutsRepository
@@ -21,47 +22,47 @@ fun Application.workoutRoutes(repo: WorkoutsRepository) {
         }
 
         get("/workout/{id}") {
-            val workoutIdParam = call.parameters["id"]
-                ?: return@get call.respond(HttpStatusCode.BadRequest, "Workout ID is required")
-
-            val workoutId = try {
-                UUID.fromString(workoutIdParam)
-            } catch (e: IllegalArgumentException) {
-                return@get call.respond(HttpStatusCode.BadRequest, "Invalid workout ID format")
-            }
-
+            val workoutId = UUID.fromString(call.parameters["id"]!!)
             val workout = repo.getWorkoutById(workoutId)
                 ?: return@get call.respond(HttpStatusCode.NotFound, "Workout not found")
-
-            call.respond(workout.toResponse())
+            call.respond(workout.toDetailsResponse())
         }
 
         authenticate("auth-jwt") {
             post("/workout") {
-                val userId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
-                val request = call.receive<WorkoutRequest>()
-                val workoutId = UUID.randomUUID()
-                val workout = request.toDomain(workoutId)
-
-                repo.createWorkout(UUID.fromString(userId), workout)
-                call.respond(HttpStatusCode.OK)
+                try {
+                    println("POST /workout START")
+                    val principal = call.principal<JWTPrincipal>()!!
+                    println("principal = $principal")
+                    val userId = UUID.fromString(principal.payload.getClaim("userId").asString())
+                    println("userId = $userId")
+                    val request = call.receive<WorkoutRequest>()
+                    println("request = $request")
+                    val workoutId = UUID.randomUUID()
+                    println("workoutId = $workoutId")
+                    val workout = request.toDomain(workoutId, userId)
+                    println("workout = $workout")
+                    repo.createWorkout(userId, workout)
+                    println("Workout saved")
+                    call.respond(mapOf("id" to workoutId.toString()))
+                } catch (e: Exception) {
+                    println("ERROR in POST /workout:")
+                    e.printStackTrace()
+                    throw e
+                }
             }
 
             delete("/workout/{id}") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val userId = UUID.fromString(principal.payload.getClaim("userId").asString())
-
                 val workoutIdParam = call.parameters["id"]
                     ?: return@delete call.respond(HttpStatusCode.BadRequest, "Workout ID is required")
-
                 val workoutId = try {
                     UUID.fromString(workoutIdParam)
                 } catch (e: IllegalArgumentException) {
                     return@delete call.respond(HttpStatusCode.BadRequest, "Invalid workout ID format")
                 }
-
                 val deleted = repo.deleteWorkout(userId, workoutId)
-
                 if (deleted) {
                     call.respond(HttpStatusCode.OK, "Workout deleted")
                 } else {
@@ -72,14 +73,10 @@ fun Application.workoutRoutes(repo: WorkoutsRepository) {
             put("/workout/{id}") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val userId = UUID.fromString(principal.payload.getClaim("userId").asString())
-
                 val workoutId = UUID.fromString(call.parameters["id"]!!)
-
                 val request = call.receive<WorkoutRequest>()
-                val workout = request.toDomain(workoutId)
-
+                val workout = request.toDomain(workoutId, userId)
                 val updated = repo.updateWorkout(userId, workoutId, workout)
-
                 if (updated) call.respond("Workout updated")
                 else call.respond(HttpStatusCode.NotFound, "Workout not found")
             }

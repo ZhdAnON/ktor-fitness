@@ -1,11 +1,10 @@
-package com.zhdanon.models.dto
+package com.zhdanon.models.request
 
 import com.zhdanon.models.domain.ProtocolType
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class WorkoutSetRequest(
-    val id: String,
     val order: Int,
     val protocol: ProtocolType,
     val rounds: RoundsRequest,

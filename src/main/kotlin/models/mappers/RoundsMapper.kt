@@ -1,7 +1,7 @@
 package com.zhdanon.models.mappers
 
 import com.zhdanon.models.domain.Rounds
-import com.zhdanon.models.dto.RoundsRequest
+import com.zhdanon.models.request.RoundsRequest
 import com.zhdanon.models.response.RoundsResponse
 
 fun RoundsRequest.toDomain(): Rounds = when (this) {

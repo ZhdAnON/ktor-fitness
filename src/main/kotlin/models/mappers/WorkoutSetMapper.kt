@@ -1,7 +1,7 @@
 package com.zhdanon.models.mappers
 
 import com.zhdanon.models.domain.WorkoutSet
-import com.zhdanon.models.dto.WorkoutSetRequest
+import com.zhdanon.models.request.WorkoutSetRequest
 import com.zhdanon.models.response.WorkoutSetResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -9,7 +9,7 @@ import java.util.*
 
 fun WorkoutSetRequest.toDomain(): WorkoutSet =
     WorkoutSet(
-        id = UUID.fromString(id),
+        id = UUID.randomUUID(),
         order = order,
         protocol = protocol,
         rounds = rounds.toDomain(),
@@ -19,7 +19,7 @@ fun WorkoutSetRequest.toDomain(): WorkoutSet =
     )
 
 fun WorkoutSet.toResponse() = WorkoutSetResponse(
-    id = id.toString(),
+    id = UUID.randomUUID().toString(),
     order = order,
     protocol = protocol.name,
     rounds = rounds.toResponse(),

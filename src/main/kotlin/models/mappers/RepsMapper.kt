@@ -1,7 +1,7 @@
 package com.zhdanon.models.mappers
 
 import com.zhdanon.models.domain.Reps
-import com.zhdanon.models.dto.RepsRequest
+import com.zhdanon.models.request.RepsRequest
 import com.zhdanon.models.response.RepsResponse
 
 fun RepsRequest.toDomain(): Reps =

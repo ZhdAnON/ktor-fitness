@@ -15,7 +15,8 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*   // функция json()
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
 
@@ -25,6 +26,7 @@ fun main() {
     }.start(wait = true)
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 fun Application.module() {
     val config = JwtConfig
     val service = AuthService(jwtConfig = config)
@@ -35,6 +37,7 @@ fun Application.module() {
             Json {
                 encodeDefaults = true
                 ignoreUnknownKeys = true
+                explicitNulls = false
             }
         )
     }

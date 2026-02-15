@@ -4,8 +4,8 @@ import com.zhdanon.database.DatabaseFactory.dbQuery
 import com.zhdanon.models.tables.SetExercisesTable
 import com.zhdanon.models.tables.WorkoutSetsTable
 import com.zhdanon.models.tables.WorkoutsTable
-import com.zhdanon.models.dto.RepsRequest
-import com.zhdanon.models.dto.RoundsRequest
+import com.zhdanon.models.request.RepsRequest
+import com.zhdanon.models.request.RoundsRequest
 import com.zhdanon.models.mappers.toDomain
 import com.zhdanon.models.domain.ProtocolType
 import com.zhdanon.models.domain.SetExercise
@@ -17,6 +17,8 @@ import java.util.*
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inSubQuery
+import kotlinx.serialization.encodeToString
+
 
 class WorkoutsRepository {
 
@@ -43,7 +45,7 @@ class WorkoutsRepository {
                     it[id] = ex.id
                     it[setId] = set.id
                     it[exerciseId] = ex.exerciseId
-                    it[reps] = ex.repsJson
+                    it[reps] = Json.encodeToString(ex.reps)
                     it[note] = ex.note
                 }
             }
@@ -72,8 +74,6 @@ class WorkoutsRepository {
                                     id = exRow[SetExercisesTable.id],
                                     exerciseId = exRow[SetExercisesTable.exerciseId],
                                     reps = repsRequest.toDomain(),                 // доменная модель
-                                    repsJson = exRow[SetExercisesTable.reps],      // JSON-строка
-                                    repsRequest = repsRequest,                     // DTO
                                     note = exRow[SetExercisesTable.note]
                                 )
                             }
@@ -92,6 +92,7 @@ class WorkoutsRepository {
 
                 Workout(
                     id = workoutId,
+                    userId = row[WorkoutsTable.userId],
                     date = row[WorkoutsTable.date],
                     title = row[WorkoutsTable.title],
                     sets = sets
@@ -117,8 +118,6 @@ class WorkoutsRepository {
                                     id = exRow[SetExercisesTable.id],
                                     exerciseId = exRow[SetExercisesTable.exerciseId],
                                     reps = repsRequest.toDomain(),
-                                    repsJson = exRow[SetExercisesTable.reps],
-                                    repsRequest = repsRequest,
                                     note = exRow[SetExercisesTable.note]
                                 )
                             }
@@ -138,6 +137,7 @@ class WorkoutsRepository {
 
                 Workout(
                     id = workoutId,
+                    userId = row[WorkoutsTable.userId],
                     date = row[WorkoutsTable.date],
                     title = row[WorkoutsTable.title],
                     sets = sets
@@ -155,14 +155,14 @@ class WorkoutsRepository {
         if (!exists) return@dbQuery false
 
         // Удаляем упражнения → сеты → тренировку
-        SetExercisesTable.deleteWhere { SetExercisesTable.setId inSubQuery
+        SetExercisesTable.deleteWhere { setId inSubQuery
                 WorkoutSetsTable.slice(WorkoutSetsTable.id)
                     .select { WorkoutSetsTable.workoutId eq workoutId }
         }
 
         WorkoutSetsTable.deleteWhere { WorkoutSetsTable.workoutId eq workoutId }
 
-        WorkoutsTable.deleteWhere { WorkoutsTable.id eq workoutId }
+        WorkoutsTable.deleteWhere { id eq workoutId }
 
         true
     }
@@ -177,7 +177,7 @@ class WorkoutsRepository {
 
         // Удаляем старые данные
         SetExercisesTable.deleteWhere {
-            SetExercisesTable.setId inSubQuery
+            setId inSubQuery
                     WorkoutSetsTable.slice(WorkoutSetsTable.id)
                         .select { WorkoutSetsTable.workoutId eq workoutId }
         }
@@ -206,7 +206,7 @@ class WorkoutsRepository {
                     row[id] = ex.id
                     row[setId] = set.id
                     row[exerciseId] = ex.exerciseId
-                    row[reps] = ex.repsJson
+                    row[reps] = Json.encodeToString(ex.reps)
                     row[note] = ex.note
                 }
             }

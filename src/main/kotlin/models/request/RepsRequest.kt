@@ -1,4 +1,4 @@
-package com.zhdanon.models.dto
+package com.zhdanon.models.request
 
 import kotlinx.serialization.Serializable
 
