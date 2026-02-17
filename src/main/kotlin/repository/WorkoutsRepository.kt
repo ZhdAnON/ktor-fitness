@@ -10,6 +10,7 @@ import com.zhdanon.models.domain.ProtocolType
 import com.zhdanon.models.domain.SetExercise
 import com.zhdanon.models.domain.Workout
 import com.zhdanon.models.domain.WorkoutSet
+import com.zhdanon.models.request.RepsRequest
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.*
 import java.util.*
@@ -35,7 +36,7 @@ class WorkoutsRepository {
                 it[workoutId] = workout.id
                 it[order] = set.order
                 it[protocol] = set.protocol.name
-                it[rounds] = set.roundsJson
+                it[rounds] = Json.encodeToString(set.roundsRequest)
                 it[note] = set.note
             }
 
@@ -44,7 +45,7 @@ class WorkoutsRepository {
                     it[id] = ex.id
                     it[setId] = set.id
                     it[exerciseId] = ex.exerciseId
-                    it[reps] = Json.encodeToString(ex.reps)
+                    it[reps] = Json.encodeToString(ex.repsRequest)
                     it[note] = ex.note
                 }
             }
@@ -67,10 +68,14 @@ class WorkoutsRepository {
                         val exercises = SetExercisesTable
                             .select { SetExercisesTable.setId eq setId }
                             .map { exRow ->
+                                val repsJson = exRow[SetExercisesTable.reps]
+                                val repsRequest = Json.decodeFromString<RepsRequest>(repsJson)
+                                val repsDomain = repsRequest.toDomain()
                                 SetExercise(
                                     id = exRow[SetExercisesTable.id],
                                     exerciseId = exRow[SetExercisesTable.exerciseId],
-                                    reps = exRow[SetExercisesTable.reps],
+                                    reps = repsDomain,
+                                    repsRequest = repsRequest,
                                     note = exRow[SetExercisesTable.note]
                                 )
                             }
@@ -81,7 +86,7 @@ class WorkoutsRepository {
                             order = setRow[WorkoutSetsTable.order],
                             protocol = ProtocolType.valueOf(setRow[WorkoutSetsTable.protocol]),
                             rounds = roundsRequest.toDomain(),
-                            roundsJson = setRow[WorkoutSetsTable.rounds],   // ← вот это нужно
+                            roundsRequest = roundsRequest,
                             exercises = exercises,
                             note = setRow[WorkoutSetsTable.note]
                         )
@@ -109,10 +114,14 @@ class WorkoutsRepository {
                         val exercises = SetExercisesTable
                             .select { SetExercisesTable.setId eq setId }
                             .map { exRow ->
+                                val repsJson = exRow[SetExercisesTable.reps]
+                                val repsRequest = Json.decodeFromString<RepsRequest>(repsJson)
+                                val repsDomain = repsRequest.toDomain()
                                 SetExercise(
                                     id = exRow[SetExercisesTable.id],
                                     exerciseId = exRow[SetExercisesTable.exerciseId],
-                                    reps = exRow[SetExercisesTable.reps],
+                                    reps = repsDomain,
+                                    repsRequest = repsRequest,
                                     note = exRow[SetExercisesTable.note]
                                 )
                             }
@@ -124,7 +133,7 @@ class WorkoutsRepository {
                             order = setRow[WorkoutSetsTable.order],
                             protocol = ProtocolType.valueOf(setRow[WorkoutSetsTable.protocol]),
                             rounds = roundsRequest.toDomain(),
-                            roundsJson = setRow[WorkoutSetsTable.rounds],
+                            roundsRequest = roundsRequest,
                             exercises = exercises,
                             note = setRow[WorkoutSetsTable.note]
                         )
@@ -192,7 +201,7 @@ class WorkoutsRepository {
                 row[WorkoutSetsTable.workoutId] = workoutId
                 row[order] = set.order
                 row[protocol] = set.protocol.name
-                row[rounds] = set.roundsJson
+                row[rounds] = Json.encodeToString(set.roundsRequest)
                 row[note] = set.note
             }
 
@@ -201,7 +210,7 @@ class WorkoutsRepository {
                     row[id] = ex.id
                     row[setId] = set.id
                     row[exerciseId] = ex.exerciseId
-                    row[reps] = Json.encodeToString(ex.reps)
+                    row[reps] = Json.encodeToString(ex.repsRequest)
                     row[note] = ex.note
                 }
             }

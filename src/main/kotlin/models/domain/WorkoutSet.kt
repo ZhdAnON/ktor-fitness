@@ -1,5 +1,6 @@
 package com.zhdanon.models.domain
 
+import com.zhdanon.models.request.RoundsRequest
 import java.util.UUID
 
 data class WorkoutSet(
@@ -7,7 +8,7 @@ data class WorkoutSet(
     val order: Int,
     val protocol: ProtocolType,
     val rounds: Rounds,
-    val roundsJson: String,
+    val roundsRequest: RoundsRequest,
     val exercises: List<SetExercise>,
     val note: String? = null
 )
