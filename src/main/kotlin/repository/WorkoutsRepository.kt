@@ -4,7 +4,6 @@ import com.zhdanon.database.DatabaseFactory.dbQuery
 import com.zhdanon.models.tables.SetExercisesTable
 import com.zhdanon.models.tables.WorkoutSetsTable
 import com.zhdanon.models.tables.WorkoutsTable
-import com.zhdanon.models.request.RepsRequest
 import com.zhdanon.models.request.RoundsRequest
 import com.zhdanon.models.mappers.toDomain
 import com.zhdanon.models.domain.ProtocolType
@@ -68,12 +67,10 @@ class WorkoutsRepository {
                         val exercises = SetExercisesTable
                             .select { SetExercisesTable.setId eq setId }
                             .map { exRow ->
-                                val repsRequest = Json.decodeFromString<RepsRequest>(exRow[SetExercisesTable.reps])
-
                                 SetExercise(
                                     id = exRow[SetExercisesTable.id],
                                     exerciseId = exRow[SetExercisesTable.exerciseId],
-                                    reps = repsRequest.toDomain(),                 // доменная модель
+                                    reps = exRow[SetExercisesTable.reps],
                                     note = exRow[SetExercisesTable.note]
                                 )
                             }
@@ -112,12 +109,10 @@ class WorkoutsRepository {
                         val exercises = SetExercisesTable
                             .select { SetExercisesTable.setId eq setId }
                             .map { exRow ->
-                                val repsRequest = Json.decodeFromString<RepsRequest>(exRow[SetExercisesTable.reps])
-
                                 SetExercise(
                                     id = exRow[SetExercisesTable.id],
                                     exerciseId = exRow[SetExercisesTable.exerciseId],
-                                    reps = repsRequest.toDomain(),
+                                    reps = exRow[SetExercisesTable.reps],
                                     note = exRow[SetExercisesTable.note]
                                 )
                             }

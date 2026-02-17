@@ -7,5 +7,6 @@ data class RoundsResponse(
     val type: String,
     val count: Int? = null,
     val from: Int? = null,
-    val to: Int? = null
+    val to: Int? = null,
+    val duration: Int? = null
 )

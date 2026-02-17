@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class SetExerciseResponse(
     val id: String,
     val exerciseId: String,
-    val reps: RepsResponse,
+    val reps: String,
     val note: String?
 )

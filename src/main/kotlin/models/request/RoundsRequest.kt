@@ -5,19 +5,19 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class RoundsRequest {
-    @Serializable
-    @SerialName("Fixed")
+
+    @Serializable @SerialName("Fixed")
     data class Fixed(val count: Int) : RoundsRequest()
 
-    @Serializable
-    @SerialName("Range")
-    data class Range(val min: Int, val max: Int) : RoundsRequest()
+    @Serializable @SerialName("Range")
+    data class Range(val from: Int, val to: Int) : RoundsRequest()
 
-    @Serializable
-    @SerialName("Time")
-    data class Time(val seconds: Int) : RoundsRequest()
+    @Serializable @SerialName("TimeFixed")
+    data class TimeFixed(val duration: Int) : RoundsRequest()
 
-    @Serializable
-    @SerialName("None")
+    @Serializable @SerialName("TimeRange")
+    data class TimeRange(val from: Int, val to: Int) : RoundsRequest()
+
+    @Serializable @SerialName("None")
     data object None : RoundsRequest()
 }

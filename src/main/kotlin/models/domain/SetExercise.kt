@@ -5,6 +5,6 @@ import java.util.UUID
 data class SetExercise(
     val id: UUID,
     val exerciseId: UUID,
-    val reps: Reps,
+    val reps: String,
     val note: String?
 )

@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SetExerciseRequest(
     val exerciseId: String,
-    val reps: RepsRequest,
+    val reps: String,
     val note: String? = null
 )

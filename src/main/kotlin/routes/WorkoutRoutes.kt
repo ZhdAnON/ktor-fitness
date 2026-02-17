@@ -31,22 +31,14 @@ fun Application.workoutRoutes(repo: WorkoutsRepository) {
         authenticate("auth-jwt") {
             post("/workout") {
                 try {
-                    println("POST /workout START")
                     val principal = call.principal<JWTPrincipal>()!!
-                    println("principal = $principal")
                     val userId = UUID.fromString(principal.payload.getClaim("userId").asString())
-                    println("userId = $userId")
                     val request = call.receive<WorkoutRequest>()
-                    println("request = $request")
                     val workoutId = UUID.randomUUID()
-                    println("workoutId = $workoutId")
                     val workout = request.toDomain(workoutId, userId)
-                    println("workout = $workout")
                     repo.createWorkout(userId, workout)
-                    println("Workout saved")
                     call.respond(mapOf("id" to workoutId.toString()))
                 } catch (e: Exception) {
-                    println("ERROR in POST /workout:")
                     e.printStackTrace()
                     throw e
                 }

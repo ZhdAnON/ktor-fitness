@@ -7,7 +7,7 @@ data class WorkoutSet(
     val order: Int,
     val protocol: ProtocolType,
     val rounds: Rounds,
-    val roundsJson: String,   // ← новое поле
+    val roundsJson: String,
     val exercises: List<SetExercise>,
     val note: String? = null
 )

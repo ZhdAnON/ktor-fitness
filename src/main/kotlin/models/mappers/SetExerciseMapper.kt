@@ -9,13 +9,13 @@ fun SetExerciseRequest.toDomain(): SetExercise =
     SetExercise(
         id = UUID.randomUUID(),
         exerciseId = UUID.fromString(exerciseId),
-        reps = reps.toDomain(),
+        reps = reps,
         note = note
     )
 
 fun SetExercise.toResponse() = SetExerciseResponse(
     id = id.toString(),
     exerciseId = exerciseId.toString(),
-    reps = reps.toResponse(),
+    reps = reps,
     note = note
 )
