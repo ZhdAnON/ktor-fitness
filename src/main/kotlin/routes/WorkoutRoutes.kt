@@ -55,22 +55,28 @@ fun Application.workoutRoutes(repo: WorkoutsRepository) {
                     return@delete call.respond(HttpStatusCode.BadRequest, "Invalid workout ID format")
                 }
                 val deleted = repo.deleteWorkout(userId, workoutId)
-                if (deleted) {
-                    call.respond(HttpStatusCode.OK, "Workout deleted")
-                } else {
-                    call.respond(HttpStatusCode.NotFound, "Workout not found")
-                }
+                if (deleted) call.respond(HttpStatusCode.OK, "Workout deleted")
+                else call.respond(HttpStatusCode.NotFound, "Workout not found")
             }
 
             put("/workout/{id}") {
                 val principal = call.principal<JWTPrincipal>()!!
                 val userId = UUID.fromString(principal.payload.getClaim("userId").asString())
-                val workoutId = UUID.fromString(call.parameters["id"]!!)
+                val workoutIdParam = call.parameters["id"]
+                    ?: return@put call.respond(HttpStatusCode.BadRequest, "Workout ID is required")
+                val workoutId = try {
+                    UUID.fromString(workoutIdParam)
+                } catch (e: IllegalArgumentException) {
+                    return@put call.respond(HttpStatusCode.BadRequest, "Invalid workout ID format")
+                }
                 val request = call.receive<WorkoutRequest>()
                 val workout = request.toDomain(workoutId, userId)
                 val updated = repo.updateWorkout(userId, workoutId, workout)
-                if (updated) call.respond("Workout updated")
-                else call.respond(HttpStatusCode.NotFound, "Workout not found")
+                if (updated) {
+                    call.respond(workout.toResponse())
+                } else {
+                    call.respond(HttpStatusCode.NotFound, "Workout not found")
+                }
             }
         }
     }
