@@ -8,8 +8,8 @@ import java.util.*
 
 object JwtConfig {
     private const val issuer = "ktor-fitness"
-    private const val accessValidityMs = 1000L * 60L * 15L // 15 минут
-    private const val refreshValidityMs = 1000L * 60L * 60L * 24L * 30L // 30 дней
+    private const val accessValidityMs = 1000L * 60L * 15L
+    private const val refreshValidityMs = 1000L * 60L * 60L * 24L * 30L
 
     private val secret = System.getenv("JWT_SECRET") ?: "dev-secret"
     private val algorithm = Algorithm.HMAC256(secret)
@@ -23,13 +23,17 @@ object JwtConfig {
             .withExpiresAt(Date(System.currentTimeMillis() + accessValidityMs))
             .sign(algorithm)
 
-    fun generateRefreshToken(user: User): String =
-        JWT.create()
+    fun generateRefreshToken(user: User): Pair<String, Date> {
+        val expires = Date(System.currentTimeMillis() + refreshValidityMs)
+        val token = JWT.create()
             .withIssuer(issuer)
             .withClaim("userId", user.id.toString())
             .withClaim("type", "refresh")
-            .withExpiresAt(Date(System.currentTimeMillis() + refreshValidityMs))
+            .withExpiresAt(expires)
             .sign(algorithm)
+
+        return token to expires
+    }
 
     fun verifyRefreshToken(token: String) =
         JWT.require(algorithm)

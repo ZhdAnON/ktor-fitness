@@ -8,5 +8,7 @@ data class User(
     val email: String,
     val passwordHash: String,
     val createdAt: LocalDateTime,
-    val role: String
+    val role: String,
+    val refreshToken: String?,
+    val refreshExpiresAt: LocalDateTime?
 )
