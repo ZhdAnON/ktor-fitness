@@ -30,7 +30,7 @@ fun Rounds.toResponse(): RoundsResponse =
         )
         is Rounds.TimeFixed -> RoundsResponse(
             type = "TimeFixed",
-            from = duration
+            duration = duration
         )
         Rounds.None -> RoundsResponse(
             type = "None"

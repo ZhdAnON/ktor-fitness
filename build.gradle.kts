@@ -51,4 +51,5 @@ dependencies {
     // BCrypt
     implementation("org.mindrot:jbcrypt:0.4")
     implementation(kotlin("stdlib-jdk8"))
+    implementation("at.favre.lib:bcrypt:0.10.2")
 }

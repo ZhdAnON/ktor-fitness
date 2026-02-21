@@ -1,6 +1,7 @@
 package com.zhdanon.auth
 
 import com.zhdanon.models.domain.User
+import com.zhdanon.models.response.UserResponse
 import com.zhdanon.repository.UserRepository
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -80,7 +81,8 @@ class AuthService(
             user = UserResponse(
                 id = user.id.toString(),
                 email = user.email,
-                role = user.role
+                role = user.role,
+                createdAt = user.createdAt.toString()
             ),
             accessToken = newAccess,
             refreshToken = newRefresh

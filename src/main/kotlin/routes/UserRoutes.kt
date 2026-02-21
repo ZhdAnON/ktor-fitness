@@ -1,6 +1,6 @@
 package com.zhdanon.routes
 
-import com.zhdanon.auth.UserResponse
+import com.zhdanon.models.response.UserResponse
 import com.zhdanon.repository.UserRepository
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -24,7 +24,8 @@ fun Application.userRoutes(userRepository: UserRepository) {
                     UserResponse(
                         id = user.id.toString(),
                         email = user.email,
-                        role = user.role
+                        role = user.role,
+                        createdAt = user.createdAt.toString()
                     )
                 )
             }

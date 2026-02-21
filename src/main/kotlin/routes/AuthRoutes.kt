@@ -1,6 +1,7 @@
 package com.zhdanon.routes
 
 import com.zhdanon.auth.*
+import com.zhdanon.models.mappers.toResponse
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -17,11 +18,7 @@ fun Application.authRoutes(authService: AuthService) {
                 onSuccess = { (user, tokens) ->
                     call.respond(
                         AuthResponse(
-                            user = UserResponse(
-                                id = user.id.toString(),
-                                email = user.email,
-                                role = user.role
-                            ),
+                            user = user.toResponse(),
                             accessToken = tokens.access,
                             refreshToken = tokens.refresh
                         )
@@ -44,11 +41,7 @@ fun Application.authRoutes(authService: AuthService) {
                 onSuccess = { (user, tokens) ->
                     call.respond(
                         AuthResponse(
-                            user = UserResponse(
-                                id = user.id.toString(),
-                                email = user.email,
-                                role = user.role
-                            ),
+                            user = user.toResponse(),
                             accessToken = tokens.access,
                             refreshToken = tokens.refresh
                         )

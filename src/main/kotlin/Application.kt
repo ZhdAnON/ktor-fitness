@@ -56,6 +56,7 @@ fun Application.module() {
     configureAuth()
     healthRoutes()
     authRoutes(service)
+    adminUserRoutes(service.userRepository)
     userRoutes(service.userRepository)
     workoutRoutes(workoutsRepository)
     exerciseRoutes(exerciseRepository)

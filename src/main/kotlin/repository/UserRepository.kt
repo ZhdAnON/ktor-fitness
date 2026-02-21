@@ -7,10 +7,16 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
 class UserRepository {
+
+    fun getAll(): List<User> = transaction {
+        Users.selectAll()
+            .map(::rowToUser)
+    }
 
     fun createUser(email: String, passwordHash: String, role: String = "USER"): User {
         val id = UUID.randomUUID()
@@ -29,6 +35,28 @@ class UserRepository {
         }
 
         return User(id, email, passwordHash, now, role, null, null)
+    }
+
+    fun updateRole(userId: UUID, role: String) {
+        transaction {
+            Users.update({ Users.id eq userId }) {
+                it[Users.role] = role
+            }
+        }
+    }
+
+    fun updatePassword(userId: UUID, newPasswordHash: String) {
+        transaction {
+            Users.update({ Users.id eq userId }) {
+                it[passwordHash] = newPasswordHash
+            }
+        }
+    }
+
+    fun delete(userId: UUID) {
+        transaction {
+            Users.deleteWhere { Users.id eq userId }
+        }
     }
 
     fun findByEmail(email: String): User? = transaction {
