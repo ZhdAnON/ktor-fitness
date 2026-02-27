@@ -5,6 +5,7 @@ import com.zhdanon.auth.JwtConfig
 import com.zhdanon.auth.configureAuth
 import com.zhdanon.database.DatabaseFactory
 import com.zhdanon.repository.ExerciseRepository
+import com.zhdanon.repository.NutritionRepository
 import com.zhdanon.repository.WorkoutsRepository
 import com.zhdanon.routes.*
 import io.ktor.server.application.*
@@ -30,6 +31,7 @@ fun Application.module() {
     val service = AuthService(jwtConfig = config)
     val workoutsRepository = WorkoutsRepository()
     val exerciseRepository = ExerciseRepository()
+    val nutritionRepository = NutritionRepository()
 
     install(ContentNegotiation) {
         json(
@@ -60,4 +62,5 @@ fun Application.module() {
     userRoutes(service.userRepository)
     workoutRoutes(workoutsRepository)
     exerciseRoutes(exerciseRepository)
+    nutritionRoutes(nutritionRepository)
 }
