@@ -57,6 +57,12 @@ class ExerciseRepository {
         } > 0
     }
 
+    suspend fun updateVideoUrl(id: UUID, url: String): Boolean = dbQuery {
+        ExercisesTable.update({ ExercisesTable.id eq id }) {
+            it[videoUrl] = url
+        } > 0
+    }
+
     suspend fun delete(id: UUID): Boolean = dbQuery {
         ExercisesTable.deleteWhere { ExercisesTable.id eq id } > 0
     }

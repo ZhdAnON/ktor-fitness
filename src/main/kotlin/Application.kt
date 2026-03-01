@@ -18,6 +18,11 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.s3.S3Client
+import java.net.URI
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
@@ -32,6 +37,21 @@ fun Application.module() {
     val workoutsRepository = WorkoutsRepository()
     val exerciseRepository = ExerciseRepository()
     val nutritionRepository = NutritionRepository()
+
+    val bucketName = "fitness-app-storage"
+
+    val s3 = S3Client.builder()
+        .region(Region.of("ru-central1"))
+        .endpointOverride(URI("https://storage.yandexcloud.net"))
+        .credentialsProvider(
+            StaticCredentialsProvider.create(
+                AwsBasicCredentials.create(
+                    System.getenv("YC_ACCESS_KEY"),
+                    System.getenv("YC_SECRET_KEY")
+                )
+            )
+        )
+        .build()
 
     install(ContentNegotiation) {
         json(
@@ -61,6 +81,6 @@ fun Application.module() {
     adminUserRoutes(service.userRepository)
     userRoutes(service.userRepository)
     workoutRoutes(workoutsRepository)
-    exerciseRoutes(exerciseRepository)
+    exerciseRoutes(exerciseRepository, s3, bucketName)
     nutritionRoutes(nutritionRepository)
 }
