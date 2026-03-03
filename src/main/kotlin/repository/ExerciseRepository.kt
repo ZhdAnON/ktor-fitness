@@ -43,7 +43,9 @@ class ExerciseRepository {
             it[name] = req.name
             it[muscleGroups] = req.muscleGroups.joinToString(",")
             it[technique] = req.technique
-            it[videoUrl] = req.videoUrl
+            if (req.videoUrl != null) {
+                it[videoUrl] = req.videoUrl
+            }
         }
         Exercise(id, req.name, req.muscleGroups, req.technique, req.videoUrl)
     }
