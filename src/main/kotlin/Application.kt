@@ -38,7 +38,7 @@ fun Application.module() {
     val exerciseRepository = ExerciseRepository()
     val nutritionRepository = NutritionRepository()
 
-    val bucketName = "fitness-app-storage"
+    val bucketName = "fitness-app-videos"
 
     val s3 = S3Client.builder()
         .region(Region.of("ru-central1"))
